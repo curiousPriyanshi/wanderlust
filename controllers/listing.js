@@ -3,7 +3,24 @@ const fetch = require("node-fetch");
 
 
 module.exports.index = async (req,res)=>{
-    const allListings= await Listing.find({})
+  const {search} = req.query;
+  let allListings;
+  if(search){
+    allListings = await Listing.find({
+      $or:[
+        {title: {$regex: search, $options: 'i'}},
+        {location: {$regex: search, $options: 'i'}},
+        {country: {$regex: search, $options: 'i'}}
+      ]
+    })
+  }else{
+    allListings= await Listing.find({})
+  }
+  if (search && allListings.length === 0) {
+  req.flash("error", "No listings found for your search.");
+  return res.redirect("/listings");
+}
+
      res.render("./listings/index.ejs",{allListings})
 }
 

@@ -4,6 +4,7 @@ if(process.env.NODE_ENV !== "production"){
 }
 
 const express = require("express");
+const MongoStore = require('connect-mongo').default;
 const app = express();
 const path = require("path");
 const mongoose = require("mongoose");
@@ -22,14 +23,15 @@ const userRouter = require("./routes/user.js");
 
 app.use(methodOverride('_method')); // for PUT and DELETE requests
 
-const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust'
+// const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust'
+const dbUrl = process.env.ATLASDB_URL;
 
 main()
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Failed to connect to MongoDB", err));
 
 async function main() {
-    await mongoose.connect(MONGO_URL)
+    await mongoose.connect(dbUrl)
 }
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -37,8 +39,19 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('ejs', ejsMate); // Use ejsMate as the template engine
 app.use(express.static(path.join(__dirname, 'public')))
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto:{
+        secret:process.env.SECRET,
+    },
+    touchAfter: 24 * 60 * 60 // time period in seconds.. time till which session is not updated in db if no changes are made to session
+});
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e)
+});
 let sessionOptions = {
-    secret: "secret123",
+    store,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -47,6 +60,9 @@ let sessionOptions = {
         httpOnly: true //to prevent cross site scripting attacks
     }
 }
+
+
+
 // app.get("/", (req, res) => {
 //     res.send("Hi! I am root");
 // })
@@ -83,5 +99,7 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(8080, () => {
-    console.log("Server is running on port 8080");
+    // console.log("Server is running on port 8080");
+    console.log("DB URL:", process.env.ATLASDB_URL);
+
 })
