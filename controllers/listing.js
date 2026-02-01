@@ -47,8 +47,16 @@ module.exports.createListing = async (req,res)=>{
     const location = req.body.Listing.location;
 
 const geoRes = await fetch(
-  `https://nominatim.openstreetmap.org/search?format=json&q=${location}`
+  `https://nominatim.openstreetmap.org/search?format=json&q=${location}`,{
+      headers: {
+        "User-Agent": "wanderlust-app/1.0 (priyanshiraghav05@gmail.com)"
+    }
+  }
 );
+if(!geoRes.ok){
+    req.flash("error", "Geocoding service is currently unavailable. Please try again later.");
+    return res.redirect("/listings/new");
+}
 
 const geoData = await geoRes.json();
 

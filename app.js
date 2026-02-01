@@ -57,7 +57,9 @@ let sessionOptions = {
     cookie: {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
         maxAge: 7 * 24 * 60 * 60 * 1000, // 
-        httpOnly: true //to prevent cross site scripting attacks
+        httpOnly: true, //to prevent cross site scripting attacks
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === "production" ? true : false,// to ensure cookie is only sent over https in production
     }
 }
 
@@ -66,6 +68,7 @@ let sessionOptions = {
 app.get("/", (req, res) => {
     res.redirect("/listings");
 })
+app.set("trust proxy", 1);
 
 app.use(session(sessionOptions))
 app.use(flash())
