@@ -59,7 +59,7 @@ let sessionOptions = {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 
         httpOnly: true, //to prevent cross site scripting attacks
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === "production" ? true : false,// to ensure cookie is only sent over https in production
+        secure: true //cookie will only be sent over https
     }
 }
 
