@@ -79,6 +79,8 @@ app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.currentUser = req.user; //passport adds user property to req object
+    console.log("SESSION:", req.session);
+    console.log("USER:", req.user);
     next();
 })
 passport.use(new localStrategy(User.authenticate())); //authenticate method is added by passport-local-mongoose plugin to User model
