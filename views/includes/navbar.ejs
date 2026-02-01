@@ -46,7 +46,7 @@
 
       <div class="navbar-nav ms-auto">
         <a class="nav-link" href="/listings/new">Add a new escape</a>
-       <% if(!currentUser){ %> <%# we can't directly access req.user here but locals can be accessed here %>
+       <% if(!locals.currentUser){ %> <%# we can't directly access req.user here but locals can be accessed here %>
         <a class="nav-link active" href="/signup"><b>Sign up</b></a>
         <a class="nav-link" href="/login"><b>Log in</b></a>
        <% } else{ %>
