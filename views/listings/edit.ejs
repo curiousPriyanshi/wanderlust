@@ -18,10 +18,9 @@
                 </div>
                 <div class="mb-3">
                     Original Listing Image:<br>
-                    <img src="<%= originalImageUrl %>"
-                    alt="Current Image"
-                    class="img-fluid rounded"
-                    style="max-width: 300px;">
+                    <img src="<%= originalImageUrl.replace('/upload/', '/upload/e_blur:300/') %>" alt="Current Image"
+                        class="img-fluid rounded" style="max-width: 350px;">
+
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload new image:</label>
