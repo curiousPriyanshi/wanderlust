@@ -53,13 +53,13 @@ let sessionOptions = {
     store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
         maxAge: 7 * 24 * 60 * 60 * 1000, // 
         httpOnly: true, //to prevent cross site scripting attacks
         sameSite: 'lax',
-        secure: true //cookie will only be sent over https
+        secure: process.env.NODE_ENV==="production" //cookie will only be sent over https
     }
 }
 
@@ -93,7 +93,7 @@ app.use("/", userRouter);
 
 // //logger:- morgan is a popular logging middleware for Express.js applications
 
-//to create statndard route if url does not matches any of above specified routes
+//to create standard route if url does not matches any of above specified routes
 app.all(/.*/, (req, res, next) => {
     next(new ExpressError(404, "page Not Found"));
 })

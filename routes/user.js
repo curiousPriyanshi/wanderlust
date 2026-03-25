@@ -15,7 +15,7 @@ router.route("/login")
     .get(userController.renderLoginForm)
     .post(saveRedirectUrl, passport.authenticate("local", {
         failureRedirect: "/login",
-        failureFlash: true
+        failureFlash: "Invalid username or password"
     }),
         userController.login);
 
